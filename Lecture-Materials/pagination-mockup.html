@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <title>Top Dramas - MyDramaList Mock</title>
+    <style>
+        body { font-family: sans-serif; background-color: #f4f4f4; margin: 20px; }
+        .container { max-width: 800px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 4px; }
+        .pull-right { float: right; }
+        .m-b-sm { margin-bottom: 10px; }
+        .text-lg { font-size: 1.5rem; margin-top: 0; }
+        
+        /* Drama Card Styling matching MDL structure */
+        .box { border: 1px solid #e0e0e0; margin-bottom: 12px; padding: 15px; border-radius: 3px; background: #fff; }
+        .ranking { font-weight: bold; color: #888; }
+        .title { font-size: 1.1rem; color: #015284; margin: 0 0 5px 0; font-weight: 600; }
+        .text-muted { color: #777; font-size: 0.9rem; }
+        .score { font-weight: bold; color: #333; }
+
+        /* Pagination Styling matching MDL structure */
+        .pagination { display: flex; list-style: none; padding: 0; margin-top: 20px; gap: 4px; }
+        .page-item { display: inline-block; }
+        .page-link { padding: 6px 12px; border: 1px solid #ddd; background: #fff; text-decoration: none; color: #015284; border-radius: 2px; }
+        .page-item.active .page-link { background-color: #015284; color: #fff; border-color: #015284; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Total Results count matching MDL element structure -->
+    <p class="m-b-sm pull-right" id="total-results-count">0 results</p>
+    <h1 class="text-lg">Top Dramas</h1>
+
+    <!-- Container where drama cards are rendered -->
+    <div id="drama-list"></div>
+
+    <!-- Pagination list matching MDL structure -->
+    <ul class="pagination" id="pagination-list"></ul>
+</div>
+
+<script>
+    // 1. Mock Dataset (105 Dramas = 6 pages at 20 per page)
+    const TOTAL_ITEMS = 105;
+    const ITEMS_PER_PAGE = 20;
+
+    const mockDatabase = Array.from({ length: TOTAL_ITEMS }, (_, i) => ({
+        id: `mdl-${1000 + i}`,
+        rank: `#${i + 1}`,
+        title: `Drama Title ${i + 1}`,
+        countryYear: "Korean Drama - 2024, 16 episodes",
+        score: (9.5 - (i * 0.02)).toFixed(1),
+        synopsis: `This is the detailed description and plot overview for Drama ${i + 1}...`
+    }));
+
+    // 2. Read 'page' parameter from the URL query string
+    const urlParams = new URLSearchParams(window.location.search);
+    let currentPage = parseInt(urlParams.get('page')) || 1;
+    const totalPages = Math.ceil(TOTAL_ITEMS / ITEMS_PER_PAGE);
+
+    if (currentPage < 1) currentPage = 1;
+    if (currentPage > totalPages) currentPage = totalPages;
+
+    // 3. Update total count text
+    document.getElementById('total-results-count').innerText = `${TOTAL_ITEMS} results`;
+
+    // 4. Slice dataset for current page
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    const pagedItems = mockDatabase.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
+    // 5. Render Drama Cards (Mimicking MDL HTML markup)
+    const dramaListContainer = document.getElementById('drama-list');
+    dramaListContainer.innerHTML = pagedItems.map(drama => `
+        <div id="${drama.id}" class="box">
+            <div class="box-body">
+                <div class="ranking pull-right"><span>${drama.rank}</span></div>
+                <h6 class="title">${drama.title}</h6>
+                <span class="text-muted">${drama.countryYear}</span>
+                <p><span class="score">${drama.score}</span></p>
+                <p>${drama.synopsis}</p>
+            </div>
+        </div>
+    `).join('');
+
+    // 6. Render Pagination Links (Generates real page URLs like ?page=2)
+    const paginationContainer = document.getElementById('pagination-list');
+    let paginationHTML = '';
+
+    for (let page = 1; page <= totalPages; page++) {
+        const isActive = page === currentPage ? 'active' : '';
+        paginationHTML += `
+            <li class="page-item ${isActive}">
+                <a class="page-link" href="?page=${page}">${page}</a>
+            </li>
+        `;
+    }
+
+    if (currentPage < totalPages) {
+        paginationHTML += `
+            <li class="page-item next">
+                <a class="page-link" href="?page=${currentPage + 1}">Next</a>
+            </li>
+        `;
+    }
+
+    paginationContainer.innerHTML = paginationHTML;
+</script>
+
+</body>
+</html>

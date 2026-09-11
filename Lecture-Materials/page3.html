@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Interactive Data Page</title>
+    <style>
+        table, th, td { border: 1px solid black; border-collapse: collapse; padding: 8px; }
+        th { background-color: #e2e2e2; }
+        button { margin-bottom: 15px; padding: 8px 12px; font-size: 14px; cursor: pointer; }
+        button:disabled { background-color: #cccccc; cursor: not-allowed; }
+    </style>
+</head>
+<body>
+    <h1>Student Grades (Interactive)</h1>
+
+    <!-- Button to dynamically add more rows -->
+    <button id="add-btn">Add More Students</button>
+
+    <table id="grades-table">
+        <thead>
+            <tr>
+                <th>Student ID</th>
+                <th>Name</th>
+                <th>Grade</th>
+            </tr>
+        </thead>
+        <tbody id="table-body">
+            <!-- Initial 3 Students -->
+            <tr>
+                <td>201</td>
+                <td>Diana Prince</td>
+                <td>A+</td>
+            </tr>
+            <tr>
+                <td>202</td>
+                <td>Evan Wright</td>
+                <td>B+</td>
+            </tr>
+            <tr>
+                <td>203</td>
+                <td>Fiona Gallagher</td>
+                <td>A</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <script src="data_click.js"></script>
+</body>
+</html>
